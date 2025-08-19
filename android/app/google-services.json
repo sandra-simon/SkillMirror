@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "730510378352",
+    "project_id": "skillmirror-886be",
+    "storage_bucket": "skillmirror-886be.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730510378352:android:990741aba7979347193bb5",
+        "android_client_info": {
+          "package_name": "com.example.skillmirror"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoICbLcaiBiyfcPvDV5Np3E59Xl4M_rxY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730510378352:android:0a62387d79617e92193bb5",
+        "android_client_info": {
+          "package_name": "dfghjnk.iuytfd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoICbLcaiBiyfcPvDV5Np3E59Xl4M_rxY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

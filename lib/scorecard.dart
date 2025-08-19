@@ -8,20 +8,47 @@ class ScoreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double score = (selectedSkills.length / 10 * 100).clamp(
-      0,
-      100,
-    ); // simple scoring logic
+    // Example full skill list (replace with Firestore or dynamic list if needed)
+    final List<String> allSkills = [
+      "Python",
+      "SQL",
+      "Flutter",
+      "Machine Learning",
+      "Data Visualization",
+      "Java",
+      "React",
+      "Communication",
+      "Problem Solving",
+      "Cloud Computing"
+    ];
+
+    // Match only the skills that exist in allSkills
+    final matchedSkills = selectedSkills
+        .where((skill) =>
+            allSkills.map((s) => s.toLowerCase()).contains(skill.toLowerCase()))
+        .toList();
+
+    // Calculate score based on matched skills only
+    final double score =
+        (matchedSkills.length / allSkills.length * 100).clamp(0, 100);
+
+    // Suggested skills = ones missing from matched
+    final List<String> suggestedSkills = allSkills
+        .where((skill) => !matchedSkills
+            .map((s) => s.toLowerCase())
+            .contains(skill.toLowerCase()))
+        .toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          const SizedBox(height: 50),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Align(
-              alignment: Alignment.topLeft,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 50),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
@@ -45,72 +72,138 @@ class ScoreScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 80),
+            const SizedBox(height: 80),
 
-          // Circle progress and blur
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 200,
-                height: 200,
-                decoration: const BoxDecoration(shape: BoxShape.circle),
-                child: ClipOval(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                    child: Container(
-                      color: const Color(0xff113AF0).withOpacity(0.1),
+            // Circle progress and blur (Centered)
+            Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 200,
+                    height: 200,
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: ClipOval(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                        child: Container(
+                          color: const Color(0xff113AF0).withOpacity(0.1),
+                        ),
+                      ),
                     ),
+                  ),
+                  Container(
+                    width: 160,
+                    height: 160,
+                    decoration: const BoxDecoration(
+                      color: Color(0xff113AF0),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 170,
+                    height: 170,
+                    child: CircularProgressIndicator(
+                      value: score / 100,
+                      strokeWidth: 10,
+                      backgroundColor: Colors.transparent,
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                  Text(
+                    '${score.toStringAsFixed(1)}%',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            // Selected Skills Section
+            if (selectedSkills.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  "Your Selected Skills",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
               ),
-              Container(
-                width: 160,
-                height: 160,
-                decoration: const BoxDecoration(
-                  color: Color(0xff113AF0),
-                  shape: BoxShape.circle,
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: selectedSkills.map((skill) {
+                    return Chip(
+                      label: Text(skill),
+                      backgroundColor: Colors.grey.shade200,
+                    );
+                  }).toList(),
                 ),
               ),
-              SizedBox(
-                width: 170,
-                height: 170,
-                child: CircularProgressIndicator(
-                  value: score / 100,
-                  strokeWidth: 10,
-                  backgroundColor: Colors.transparent,
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ),
-              Text(
-                '${score.toStringAsFixed(1)}%',
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              const SizedBox(height: 30),
             ],
-          ),
 
-          const SizedBox(height: 40),
-
-          // Optionally show selected skills
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: selectedSkills.map((skill) {
-                return Chip(
-                  label: Text(skill),
-                  backgroundColor: Colors.grey.shade200,
-                );
-              }).toList(),
+            // Suggested Skills Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                "Suggested Skills",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: suggestedSkills.isEmpty
+                    ? const Center(
+                        child: Text(
+                          "You're all set! 🎉",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      )
+                    : Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: suggestedSkills.map((skill) {
+                          return Chip(
+                            label: Text(skill),
+                            backgroundColor: Colors.blue.shade50,
+                            labelStyle: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

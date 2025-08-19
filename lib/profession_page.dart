@@ -45,6 +45,7 @@ class _ProfessionPageState extends State<ProfessionPage> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
+          /// Background glowing circle
           Positioned(
             top: -50,
             right: -50,
@@ -56,7 +57,7 @@ class _ProfessionPageState extends State<ProfessionPage> {
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xff113AF0).withOpacity(0.5),
-                    blurRadius: 100, // Adjust the blur intensity here
+                    blurRadius: 100,
                     spreadRadius: 50,
                   ),
                 ],
@@ -71,6 +72,8 @@ class _ProfessionPageState extends State<ProfessionPage> {
               ),
             ),
           ),
+
+          /// Main content
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(24.0),
@@ -78,6 +81,8 @@ class _ProfessionPageState extends State<ProfessionPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 40),
+
+                  /// Title
                   RichText(
                     text: const TextSpan(
                       text: 'What\n',
@@ -98,7 +103,10 @@ class _ProfessionPageState extends State<ProfessionPage> {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 150),
+
+                  /// Professions Button
                   Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -123,90 +131,98 @@ class _ProfessionPageState extends State<ProfessionPage> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 24),
+
+                  /// Dropdown list
                   if (showDropdown)
-                    Column(
-                      children: [
-                        Container(
-                          height: 300,
-                          padding: const EdgeInsets.all(20),
-                          margin: const EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: professions.map((profession) {
-                                final isSelected =
-                                    profession == selectedProfession;
-                                return GestureDetector(
-                                  onTap: () => selectProfession(profession),
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                      horizontal: 16,
-                                    ),
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? const Color(0xff113AF0)
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text(
-                                      profession,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Colors.black.withOpacity(0.8),
+                    Expanded(   // 👈 this prevents overflow
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(20),
+                              margin: const EdgeInsets.only(top: 20),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: ListView.builder(
+                                itemCount: professions.length,
+                                itemBuilder: (context, index) {
+                                  final profession = professions[index];
+                                  final isSelected =
+                                      profession == selectedProfession;
+
+                                  return GestureDetector(
+                                    onTap: () => selectProfession(profession),
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                        horizontal: 16,
                                       ),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        ElevatedButton(
-                          onPressed: selectedProfession == null
-                              ? null
-                              : () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SkillInputForm(),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? const Color(0xff113AF0)
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        profession,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: isSelected
+                                              ? Colors.white
+                                              : Colors.black.withOpacity(0.8),
+                                        ),
+                                      ),
                                     ),
                                   );
                                 },
+                              ),
+                            ),
+                          ),
 
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff113AF0),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 30,
-                              vertical: 12,
+                          const SizedBox(height: 20),
+
+                          /// Confirm button
+                          ElevatedButton(
+                            onPressed: selectedProfession == null
+                                ? null
+                                : () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SkillInputForm(),
+                                      ),
+                                    );
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xff113AF0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                            child: const Text(
+                              'CONFIRM',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                          child: const Text(
-                            'CONFIRM',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                 ],
               ),
